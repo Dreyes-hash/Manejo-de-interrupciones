@@ -65,7 +65,7 @@ configure_exti:
     bx      lr
 ````
 ## funcionamiento general de la implementación
-1.La función __main es el punto de entrada del programa y configura los registros necesarios y los pines GPIO para el funcionamiento del proyecto.
+1. La función __main es el punto de entrada del programa y configura los registros necesarios y los pines GPIO para el funcionamiento del proyecto.
 2. La función configure_exti se encarga de configurar las interrupciones externas (EXTI). Establece el registro AFIO_EXTICR3 en cero para seleccionar el puerto GPIOA como fuente de interrupción y configura los registros EXTI_RTST, EXTI_IMR y EXTI_FTST para habilitar las interrupciones en el flanco de subida y bajada del pin EXTI10 (PA10). También se configura el registro NVIC_ISER1 para habilitar la interrupción EXTI15_10.
 3. La función output se utiliza para emitir un valor a través de los pines digitales (GPIOA_ODR). Recibe un parámetro en r6 y utiliza una máscara (0x3FF) para obtener los 5 bits menos significativos de ese valor. Luego, establece los pines correspondientes (PA0-PA4) según el valor obtenido.
 4. La función delay se utiliza para crear un retraso en el programa durante un número especificado de milisegundos (ms). Utiliza un bucle anidado con contadores para generar el retraso. El valor 1250 en ldr r0, =#1250 se ajusta para lograr un retraso aproximado de 1 ms.
