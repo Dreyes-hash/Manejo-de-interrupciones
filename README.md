@@ -27,6 +27,9 @@ En las distribuciones GNU/Linux, es necesario instalar algunos paquetes con el s
 ````
 sudo apt install gcc-arm-none-eabi stlink-tools libusb-1.0-0-dev
 ````
+## configuracion del Hardware en el protoboard ejemplo con 5 leds:
+![WhatsApp Image 2023-06-06 at 4 54 42 PM](https://github.com/Dreyes-hash/Manejo-de-interrupciones/assets/126710580/d73258bd-6f73-41aa-88ce-ebb11e7ca61a)
+
 ## configuracion del hardware
 el programa configurá los pines A0-A9 como salidas estas nos serviran para representar nuestra variable con los LEDs  y A10 # enables clock in Port B
 ````
@@ -64,6 +67,28 @@ configure_exti:
     pop     {r7}
     bx      lr
 ````
+## funcionamiento y configuracion general de la exti: 
+La función "configure_exti" se encarga de realizar la configuración necesaria para habilitar la detección de interrupciones en el pin PA10. A continuación, se explica el funcionamiento general de la EXTI y cómo se utiliza el botón en el proyecto:
+
+    Configuración de EXTI:
+        La función "configure_exti" utiliza los registros específicos del microcontrolador para configurar la EXTI.
+        Se configura el registro AFIO_EXTICR3 para indicar que el pin PA10 se utiliza como fuente de interrupción externa (EXTI10).
+        Se configura el registro EXTI_RTST para habilitar la detección de flancos de subida (rising edge) en EXTI10.
+        Se habilita la línea de interrupción EXTI10 en el registro EXTI_IMR.
+        Se configura el registro NVIC_ISER1 para habilitar la interrupción correspondiente a EXTI10.
+
+    Uso del botón:
+        El botón físico está conectado al pin PA10 del microcontrolador.
+        Cuando se presiona el botón, se produce un cambio de estado en el pin PA10.
+        La EXTI detecta este cambio de estado y genera una interrupción en el microcontrolador.
+        La interrupción activa la función "EXTI_ISRHandler", que es el manejador de interrupciones asociado a EXTI10.
+        En la función "EXTI_ISRHandler", se comprueba si la interrupción proviene del pin PA10 (EXTI10) utilizando los registros EXTI_PR y una máscara específica.
+        Si la interrupción proviene de PA10, se realiza una acción específica, como cambiar el valor almacenado entre 0 y 1.
+        Después de manejar la interrupción, se limpia la bandera de interrupción EXTI10 en el registro EXTI_PR.
+
+En resumen, la EXTI se configura para detectar cambios de estado en el pin PA10 y generar una interrupción correspondiente. El botón físico conectado a PA10 permite al usuario interactuar con el sistema y desencadenar acciones específicas cuando se presiona el botón.
+![Captura desde 2023-06-06 16-47-06](https://github.com/Dreyes-hash/Manejo-de-interrupciones/assets/126710580/1e564087-e35a-4ca9-967a-8feaa8fd0654)
+
 ## funcionamiento general de la implementación
 1. La función __main es el punto de entrada del programa y configura los registros necesarios y los pines GPIO para el funcionamiento del proyecto.
 2. La función configure_exti se encarga de configurar las interrupciones externas (EXTI). Establece el registro AFIO_EXTICR3 en cero para seleccionar el puerto GPIOA como fuente de interrupción y configura los registros EXTI_RTST, EXTI_IMR y EXTI_FTST para habilitar las interrupciones en el flanco de subida y bajada del pin EXTI10 (PA10). También se configura el registro NVIC_ISER1 para habilitar la interrupción EXTI15_10.
